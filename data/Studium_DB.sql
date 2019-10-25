@@ -7,12 +7,14 @@ CREATE TABLE IF NOT EXISTS `Utenti` (
 
 CREATE TABLE IF NOT EXISTS `Materie` (
     `codice_corso` int NOT NULL,
+    `id_cds` int NOT NULL,
     `nome` text NOT NULL,
     `anno_accademico` int NULL,
     `anno` int NULL,
     `semestre` text NULL,
     `docente` text NULL,
-    PRIMARY KEY(`codice_corso`)
+    PRIMARY KEY(`codice_corso`),
+    FOREIGN KEY(`id_cds`) REFERENCES CdS(`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `Iscrizioni` (
@@ -26,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `Iscrizioni` (
 CREATE TABLE IF NOT EXISTS `Dipartimenti` (
   `id` varchar(5) NOT NULL,
   `nome` text NOT NULL,
-  `anno_accademico` int NOT NULL
+  `anno_accademico` int NOT NULL,
   PRIMARY KEY(`id`, `anno_accademico`)
 )
 
@@ -36,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `CdS` (
   `id_dipartimento` varchar(5) DEFAULT NULL,
   `anno_accademico` int NOT NULL,
   PRIMARY KEY(`id`, `anno_accademico`),
-  FOREIGN KEY(`id_dipartimento`) REFERENCES Dipartimenti(`id`)
+  FOREIGN KEY(`id_dipartimento`) REFERENCES Dipartimenti(`id`),
   FOREIGN KEY(`anno_accademico`) REFERENCES Dipartimenti(`anno_accademico`)
 )
 
@@ -47,7 +49,7 @@ CREATE TABLE `Avvisi` (
   `contenuto` text,
   `docente` text,
   `data` text,
-  `spammed` bit(1) DEFAULT NULL
-  PRIMARY KEY(`id`, `id_materia`)
+  `spammed` bit(1) DEFAULT NULL,
+  PRIMARY KEY(`id`, `id_materia`),
   FOREIGN KEY(`id_materia`) REFERENCES Materie(`id`)
 )
