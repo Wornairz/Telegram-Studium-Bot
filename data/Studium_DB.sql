@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `Materie` (
     `anno` int NULL,
     `semestre` text NULL,
     `docente` text NULL,
-    `ultimo_avviso` int NOT NULL,
-    PRIMARY KEY(`codice_corso`),
+    `ultimo_avviso` int NOT NULL DEFAULT 0,
+    PRIMARY KEY(`codice_corso`, `id_cds`, `anno_accademico`),
     FOREIGN KEY(`id_cds`) REFERENCES `CdS`(`id`)
 ) DEFAULT CHARSET=utf8;
 

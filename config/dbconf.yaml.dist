@@ -1,0 +1,4 @@
+db_name : ""
+db_user : ""
+db_psw  : ""
+db_host : "localhost"
