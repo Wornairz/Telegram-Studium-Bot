@@ -9,12 +9,14 @@ bot = telegram.Bot(config_map["token"])
 
 def main():
     updater = Updater(TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 20})
+    
     dp = updater.dispatcher
     #dp.add_handler(MessageHandler(Filters.all, logging_message),1)
     dp.add_handler(CommandHandler('iscrizione', subscribe_course, pass_args=True))
-    dp.add_handler(CommandHandler('stampa_materie', print_courses, pass_args=True))
-
     #dp.add_handler(CallbackQueryHandler(callback))
+    dp.add_handler(CallbackQueryHandler(button_handler))
+    read_db_conf()
+
     updater.start_polling()
     updater.idle()
 
