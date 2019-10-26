@@ -20,5 +20,12 @@ If you want to test the bot by creating your personal istance, follow this steps
 - python-telegram-bot
 
 
+### Database setup
+
+- Start mysql console, create a new database (eg. "CREATE DATABASE Studium;")
+- Exit mysql console, then go to path-to-project/data
+- $ mysql -u user -p your_db_name < Studium_DB.sql
+
+
 ### License
 This open-source software is published under the GNU General Public License (GNU GPL) version 3. Please refer to the "LICENSE" file of this project for the full text.
