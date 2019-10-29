@@ -18,6 +18,7 @@ If you want to test the bot by creating your personal istance, follow this steps
 #### To install with *pip3*
 
 - python-telegram-bot
+- pytz
 
 
 ### Database setup
