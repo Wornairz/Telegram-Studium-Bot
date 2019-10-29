@@ -15,7 +15,6 @@ import random
 import requests
 
 # Others
-import mysql.connector
 import logging
 import pytz
 
@@ -49,28 +48,30 @@ def buttonHandler(update: Update, context: CallbackContext):
             data = data[:-1]
         year = data.split('=')[1]
         printDepartment(context, year, data)
-    elif data.startswith('department'):
+    elif data.startswith('dep'):
         department = (data.split('|')[0]).split('=')[1]
         year       = (data.split('|')[1]).split('=')[1]
         printCdS(context, year, department, data)
     elif data.startswith('cds'):
-        cds        = (data.split('|')[0])[:-2]
+        cds        = (data.split('|')[0])
         max_anno   = int(((data.split('|')[0]).split('=')[1]).split('_')[1])
         department = (data.split('|')[1])
         year       = (data.split('|')[2])
         data = cds + '|' + department + '|' + year
         printCourseYears(context, max_anno, data)
-    elif data.startswith('courseyear'):
+    elif data.startswith('cy'):
         printSemester(context, data)
-    elif data.startswith('semester'):
+    elif data.startswith('sem'):
         semester   = (data.split('|')[0]).split('=')[1]
         courseyear = (data.split('|')[1]).split('=')[1]
         cds        = (data.split('|')[2]).split('=')[1]
         department = (data.split('|')[3]).split('=')[1]
         year       = (data.split('|')[4]).split('=')[1]
-        printSubject(context, year, department, cds, courseyear, semester)
+        printSubject(context, year, department, cds[:-2], courseyear, semester, data)
+    elif data == "reload":
+        printYears(context, 0)
 
-def printYears(context: CallbackContext):
+def printYears(context: CallbackContext, firstCall= 1):
     september = 9
     nYearsButtons = 3
     options = []
@@ -83,19 +84,22 @@ def printYears(context: CallbackContext):
     if time > checkNewYear:
         val = 1
     for x in range(nYearsButtons):
-        options.append(str(time.year - (1-val) - x) + "/" + str((time.year + val) - x))
-        values.append("year=" + str((time.year + val) - x))
+        options.insert(0, str(time.year - (1-val) - x) + "/" + str((time.year + val) - x))
+        values.insert(0, "year=" + str((time.year + val) - x))
     keyboard = getKeyboard(options, values, "", 3)
-    context.message.reply_text("Seleziona l\'anno accademico", reply_markup=InlineKeyboardMarkup(keyboard))
+    msg = "Seleziona l\'anno accademico"
+    if firstCall:
+        context.message.reply_text(msg, reply_markup=InlineKeyboardMarkup(keyboard))
+    else:
+        context.callback_query.edit_message_text(msg, reply_markup=InlineKeyboardMarkup(keyboard))
 
 def printDepartment(context, year, data):
     names = []
     values = []
-
     for dipartimento in settings.dipartimenti:
         if str(dipartimento["anno_accademico"]) == str(year):
             names.append(dipartimento["nome"])
-            values.append("department=" + dipartimento["id"])
+            values.append("dep=" + dipartimento["id"])
     printKeyboard(context, names, values, data, "Scegli il dipartimento:", 3)
 
 def getMaxAnno(nome : str):
@@ -109,7 +113,7 @@ def printSemester(context, data):
     values = []
     for i in range(2):
         names.append(str(i+1) + "° semestre")
-        values.append("semester=" + str(i+1))
+        values.append("sem=" + str(i+1))
     printKeyboard(context, names, values, data, "Scegli il semestre:", 2)
 
 def printCdS(context, year, department, data):
@@ -127,10 +131,10 @@ def printCourseYears(context, max_anno : int, data : str):
     values = []
     for i in range(max_anno):
         names.append(str(i+1) +  "° anno")
-        values.append("courseyear=" + str(i+1))
+        values.append("cy=" + str(i+1))
     printKeyboard(context, names, values, data, "Scegli l\'anno della materia:", max_anno)
 
-def printSubject(context, year, department, cds, courseyear, semester):
+def printSubject(context, year, department, cds, courseyear, semester, data):
     names = []
     values = []
     for materia in settings.materie:
@@ -138,8 +142,8 @@ def printSubject(context, year, department, cds, courseyear, semester):
             if(str(materia["anno"]) == str(courseyear)):
                 #if(str(materia["semestre"]) == str(semester)):
                     names.append(materia["nome"])
-                    values.append("subject=" + str(materia["codice_corso"]))
-    printKeyboard(context, names, values, "", "Scegli la materia:", 1)
+                    values.append("sj=" + str(materia["codice_corso"]))
+    printKeyboard(context, names, values, data, "Scegli la materia:", 1)
 
 def printKeyboard(context, listToPrint, callbackValues, oldData, msg, nButRow):
     keyboard = getKeyboard(listToPrint, callbackValues, oldData, nButRow)
@@ -156,7 +160,9 @@ def getKeyboard(options, values, oldData, nButRow):
             keyboard.append(kb)
             kb = []
         i += 1
-    # TODO Bottone torna indietro
-    #if oldData is not "":
-        #keyboard.append([InlineKeyboardButton("Torna indietro", callback_data = oldData)])
+    if oldData != "":
+        if oldData.find("|") == -1:
+            keyboard.append([InlineKeyboardButton("Torna indietro 🔙", callback_data = "reload")])
+        else:
+            keyboard.append([InlineKeyboardButton("Torna indietro 🔙", callback_data= oldData.split("|", 1)[1])])
     return keyboard
