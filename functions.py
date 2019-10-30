@@ -37,12 +37,18 @@ def query(sql):
 def subscribe_course(update: Update, context: CallbackContext):
     printYears(context)
 
-def buttonHandler(update: Update, context: CallbackContext):
+def subscribed_subject(update: Update, context: CallbackContext):
+    print(context.message.chat_id)
+    #TODO query dove si prelevano gli id delle materie a cui risulta iscritto chat_id e si presentano all'utente
 
+def unsubscribe_course(update: Update, context: CallbackContext):
+    print("funziona :D")
+    # TODO pulsanti con le materie a cui l'utente è iscritto, con il quale può disiscriversi
+
+def buttonHandler(update: Update, context: CallbackContext):
     query = context.callback_query
     data = query.data
     print("query data = " + data)
-
     if data.startswith('year'):
         if data[len(data)-1] is "|":
             data = data[:-1]
@@ -68,8 +74,20 @@ def buttonHandler(update: Update, context: CallbackContext):
         department = (data.split('|')[3]).split('=')[1]
         year       = (data.split('|')[4]).split('=')[1]
         printSubject(context, year, department, cds[:-2], courseyear, semester, data)
-    elif data == "reload":
+    elif data.startswith('sj'):
+        subject = (data.split('|')[0]).split('=')[1]
+        printChoiceSubscription(context, subject, data)
+    elif data.startswith('confSub'):
+        chat_id = context.callback_query.message.chat_id
+        codice_corso = (data.split('|')[1]).split('=')[1]
+        #query('INSERT INTO Iscrizioni (chat_id,codice_corso) VALUES (' + str(chat_id) + ','+ str(codice_corso) +');')
+        printConfirmedSubscription(context, data)
+    elif data == "reload_printYears":
         printYears(context, 0)
+    elif data == "Esc":
+        chat_id = context.callback_query.message.chat_id
+        message_id = context.callback_query.message.message_id
+        update.deleteMessage(chat_id= chat_id, message_id= message_id)
 
 def printYears(context: CallbackContext, firstCall= 1):
     september = 9
@@ -145,6 +163,22 @@ def printSubject(context, year, department, cds, courseyear, semester, data):
                     values.append("sj=" + str(materia["codice_corso"]))
     printKeyboard(context, names, values, data, "Scegli la materia:", 1)
 
+def printChoiceSubscription(context, subject, oldData):
+    keyboard = [[InlineKeyboardButton("Si", callback_data = "confSub" + "|" + oldData),
+                 InlineKeyboardButton("No", callback_data = oldData.split("|", 1)[1])]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    name = ""
+    for materia in settings.materie:
+        if str(materia["codice_corso"]) == str(subject):
+            name = materia["nome"]
+    context.callback_query.edit_message_text("Vuoi iscriverti a " + name + "?", reply_markup=reply_markup)
+
+def printConfirmedSubscription(context, oldData):
+    keyboard = [[InlineKeyboardButton("Altre iscrizioni", callback_data= oldData.split('|', 2)[2]),
+                 InlineKeyboardButton("Esci", callback_data= 'Esc')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    context.callback_query.edit_message_text("Iscrizione avvenuta con successo!", reply_markup=reply_markup)
+
 def printKeyboard(context, listToPrint, callbackValues, oldData, msg, nButRow):
     keyboard = getKeyboard(listToPrint, callbackValues, oldData, nButRow)
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -162,7 +196,9 @@ def getKeyboard(options, values, oldData, nButRow):
         i += 1
     if oldData != "":
         if oldData.find("|") == -1:
-            keyboard.append([InlineKeyboardButton("Torna indietro 🔙", callback_data = "reload")])
+            keyboard.append([InlineKeyboardButton("Torna indietro 🔙", callback_data = "reload_printYears"),
+                            InlineKeyboardButton("Esci", callback_data = "Esc")])
         else:
-            keyboard.append([InlineKeyboardButton("Torna indietro 🔙", callback_data= oldData.split("|", 1)[1])])
+            keyboard.append([InlineKeyboardButton("Torna indietro 🔙", callback_data= oldData.split("|", 1)[1]),
+                             InlineKeyboardButton("Esci", callback_data="Esc")])
     return keyboard
