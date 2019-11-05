@@ -2,6 +2,7 @@ import yaml
 import pymysql.cursors
 import requests
 import json
+from pymysql import MySQLError
 
 with open('config/settings.yaml') as yaml_config:
 	config_map = yaml.load(yaml_config)
@@ -36,3 +37,14 @@ def read_db_conf():
         print("DB connection error")
         print(e)
     return
+
+def query(sql):
+    try:
+        with db_connection.cursor() as cursor:
+            cursor.execute(sql)
+            if not(sql.startswith("SELECT")):
+                db_connection.commit()
+            return cursor.fetchall()
+    except MySQLError as e:
+        print('Got error {!r}, errno is {}'.format(e, e.args[0]))
+        return False
