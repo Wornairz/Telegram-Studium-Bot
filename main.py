@@ -8,7 +8,7 @@ def main():
     dp = updater.dispatcher
     #dp.add_handler(MessageHandler(Filters.all, logging_message),1)
     dp.add_handler(CommandHandler('iscriviti', subscribe_course))
-    dp.add_handler(CommandHandler('iscrizioni', subscribed_subject))
+    dp.add_handler(CommandHandler('iscrizioni', subscribed_subject_text_list))
     dp.add_handler(CommandHandler('disiscriviti', unsubscribe_course))
     #dp.add_handler(CallbackQueryHandler(callback))
     dp.add_handler(CallbackQueryHandler(buttonHandler))

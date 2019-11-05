@@ -1,5 +1,5 @@
 import yaml
-import mysql
+import pymysql.cursors
 import requests
 import json
 
@@ -20,18 +20,19 @@ def read_remote_db():
     materie = json.loads(requests.get("http://" + API_URL + "/materie").text)
 
 def read_db_conf():
-    print("Lettura della configurazione del database")
-    global di_db
+    global db_connection
     conf = open("config/dbconf.yaml", "r")
     doc = yaml.safe_load(conf)
     try:
-        di_db = mysql.connector.connect(
+        db_connection = pymysql.connect(
             host=doc["db_host"],
             user=doc["db_user"],
             passwd=doc["db_psw"],
-            database=doc["db_name"]
+            db=doc["db_name"],
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
         )
-        print("DB connection successfull")
-    except:
+    except Exception as e:
         print("DB connection error")
+        print(e)
     return

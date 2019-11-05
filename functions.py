@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from pymysql import MySQLError
 
 import settings
-
+import pymysql.cursors
 # Telegram
 import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -21,29 +22,57 @@ import pytz
 
 def query(sql):
     try:
-        global di_db
-        cursor = di_db.cursor(dictionary=True)
-        cursor.execute(sql)
-        if not(sql.startswith("SELECT")):
-            di_db.commit()
-        return cursor
-    except mysql.connector.errors.OperationalError:
-        print("Connessione MySQL scaduta, riavvio")
-        settings.read_db_conf()
-        return query(sql)
-    except Exception as e:
-        print(e)
+        with settings.db_connection.cursor() as cursor:
+            cursor.execute(sql)
+            if not(sql.startswith("SELECT")):
+                settings.db_connection.commit()
+            return cursor.fetchall()
+    except MySQLError as e:
+        print('Got error {!r}, errno is {}'.format(e, e.args[0]))
+        return False
 
 def subscribe_course(update: Update, context: CallbackContext):
     printYears(context)
 
-def subscribed_subject(update: Update, context: CallbackContext):
-    print(context.message.chat_id)
-    #TODO query dove si prelevano gli id delle materie a cui risulta iscritto chat_id e si presentano all'utente
+def subscribed_subject_text_list(update: Update, context: CallbackContext):
+    msg = "";
+    for subject in subscribed_subject(context.message.chat_id):
+        msg += "✅  " + subject.split("|")[0] + "\n\n"
+    if msg is "":
+        msg = "Non sei iscritto a nessun corso"
+    context.message.reply_text(msg)
+
+
+def subscribed_subject(chat_id):
+    subscribedSubject = []
+    res = query("SELECT * FROM Iscrizioni WHERE chat_id=" + str(chat_id))
+    for record in res:
+        for materia in settings.materie:
+            if record["codice_corso"] == materia["codice_corso"]:
+                subscribedSubject.append(str(materia["nome"]) + "|" + str(materia["codice_corso"]))
+    return subscribedSubject
+
+
+def confirm_subscription(chat_id, codice_corso, context, data):
+    query("INSERT INTO `Iscrizioni` (`chat_id`,`codice_corso`) VALUES (" + str(chat_id) + "," + str(codice_corso) + ");")
+    printConfirmedSubscription(context, data)
+
+def confirm_unsubscription(chat_id, codice_corso, context, data):
+    query("DELETE FROM Iscrizioni WHERE chat_id=" + str(chat_id) + " AND codice_corso=" + str(codice_corso))
+    printConfirmedUnsubscription(context)
 
 def unsubscribe_course(update: Update, context: CallbackContext):
-    print("funziona :D")
-    # TODO pulsanti con le materie a cui l'utente è iscritto, con il quale può disiscriversi
+    printUnsubscribe(context)
+
+def printUnsubscribe(context: CallbackContext, firstCall=True):
+    names = []
+    values = []
+    chat_id = context.message.chat_id if firstCall else context.callback_query.message.chat_id
+    for subject in subscribed_subject(chat_id):
+        names.append(str(subject.split("|")[0]))
+        values.append("dis=" + str(subject.split("|")[1]))
+    printKeyboard(context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti", 1, reply=firstCall)
+
 
 def buttonHandler(update: Update, context: CallbackContext):
     query = context.callback_query
@@ -80,16 +109,27 @@ def buttonHandler(update: Update, context: CallbackContext):
     elif data.startswith('confSub'):
         chat_id = context.callback_query.message.chat_id
         codice_corso = (data.split('|')[1]).split('=')[1]
-        #query('INSERT INTO Iscrizioni (chat_id,codice_corso) VALUES (' + str(chat_id) + ','+ str(codice_corso) +');')
-        printConfirmedSubscription(context, data)
+        confirm_subscription(chat_id, codice_corso, context, data)
+    elif data.startswith("confDis"):
+        chat_id = context.callback_query.message.chat_id
+        codice_corso = (data.split('|')[1]).split('=')[1]
+        confirm_unsubscription(chat_id, codice_corso, context, codice_corso)
     elif data == "reload_printYears":
-        printYears(context, 0)
+        printYears(context, False)
+    elif data == "reload_dis":
+        printUnsubscribe(context, firstCall= False)
+    elif data.startswith("dis"):
+        if data[len(data)-1] is "|":
+            data = data[:-1]
+        chat_id = context.callback_query.message.chat_id
+        codice_corso = (data.split('|')[0]).split('=')[1]
+        printChoiceSubscription(context, codice_corso, data, dis=True)
     elif data == "Esc":
         chat_id = context.callback_query.message.chat_id
         message_id = context.callback_query.message.message_id
         update.deleteMessage(chat_id= chat_id, message_id= message_id)
 
-def printYears(context: CallbackContext, firstCall= 1):
+def printYears(context: CallbackContext, firstCall=True):
     september = 9
     nYearsButtons = 3
     options = []
@@ -104,12 +144,7 @@ def printYears(context: CallbackContext, firstCall= 1):
     for x in range(nYearsButtons):
         options.insert(0, str(time.year - (1-val) - x) + "/" + str((time.year + val) - x))
         values.insert(0, "year=" + str((time.year + val) - x))
-    keyboard = getKeyboard(options, values, "", 3)
-    msg = "Seleziona l\'anno accademico"
-    if firstCall:
-        context.message.reply_text(msg, reply_markup=InlineKeyboardMarkup(keyboard))
-    else:
-        context.callback_query.edit_message_text(msg, reply_markup=InlineKeyboardMarkup(keyboard))
+    printKeyboard(context, options, values, "", "Seleziona l\'anno accademico:", 3, reply=firstCall)
 
 def printDepartment(context, year, data):
     names = []
@@ -163,26 +198,32 @@ def printSubject(context, year, department, cds, courseyear, semester, data):
                     values.append("sj=" + str(materia["codice_corso"]))
     printKeyboard(context, names, values, data, "Scegli la materia:", 1)
 
-def printChoiceSubscription(context, subject, oldData):
-    keyboard = [[InlineKeyboardButton("Si", callback_data = "confSub" + "|" + oldData),
-                 InlineKeyboardButton("No", callback_data = oldData.split("|", 1)[1])]]
+def printChoiceSubscription(context, subject, oldData, dis=False):
+    keyboard = [[InlineKeyboardButton("Sì", callback_data = "conf" + ("Dis" if dis else "Sub") + "|" + oldData),
+                 InlineKeyboardButton("No", callback_data = ("reload_dis" if dis else oldData.split("|", 1)[1]))]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     name = ""
     for materia in settings.materie:
         if str(materia["codice_corso"]) == str(subject):
             name = materia["nome"]
-    context.callback_query.edit_message_text("Vuoi iscriverti a " + name + "?", reply_markup=reply_markup)
+    context.callback_query.edit_message_text("Vuoi " + ("di" if dis else "i") + "scriverti a " + name + "?", reply_markup=reply_markup)
 
 def printConfirmedSubscription(context, oldData):
-    keyboard = [[InlineKeyboardButton("Altre iscrizioni", callback_data= oldData.split('|', 2)[2]),
+    keyboard = [[InlineKeyboardButton("Altre iscrizioni", callback_data = oldData.split('|', 2)[2]),
                  InlineKeyboardButton("Esci", callback_data= 'Esc')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.callback_query.edit_message_text("Iscrizione avvenuta con successo!", reply_markup=reply_markup)
 
-def printKeyboard(context, listToPrint, callbackValues, oldData, msg, nButRow):
+def printConfirmedUnsubscription(context):
+    context.callback_query.edit_message_text("Discrizione avvenuta con successo!")
+
+def printKeyboard(context, listToPrint, callbackValues, oldData, msg, nButRow, reply=False):
     keyboard = getKeyboard(listToPrint, callbackValues, oldData, nButRow)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    context.callback_query.edit_message_text(msg, reply_markup=reply_markup)
+    if reply:
+        context.message.reply_text(msg, reply_markup=reply_markup)
+    else:
+        context.callback_query.edit_message_text(msg, reply_markup=reply_markup)
 
 def getKeyboard(options, values, oldData, nButRow):
     i = 1
