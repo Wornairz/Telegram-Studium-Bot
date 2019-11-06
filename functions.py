@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Telegram
+from telegram import Update
 
 # System libraries
 

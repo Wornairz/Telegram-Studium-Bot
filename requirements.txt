@@ -1,5 +1,4 @@
 python-telegram-bot==12.2.0
 pyyaml==5.1
-pymysql==0.9.3
 pytz==2019.2
 requests==2.22.0

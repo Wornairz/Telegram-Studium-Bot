@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS `Iscrizioni` (
     `codice_corso` int NOT NULL,
     `username` varchar(32) NULL,
     PRIMARY KEY(`chat_id`, `codice_corso`)
-) DEFAULT CHARSET=utf8;
+)
 

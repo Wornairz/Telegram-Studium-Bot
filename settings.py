@@ -1,11 +1,10 @@
 import yaml
-import pymysql.cursors
 import requests
 import json
-from pymysql import MySQLError
+import sqlite3
 
 with open('config/settings.yaml') as yaml_config:
-	config_map = yaml.load(yaml_config, Loader=yaml.SafeLoader)
+	config_map = yaml.safe_load(yaml_config)
 
 # Token of your telegram bot that you created from @BotFather, write it on settings.yaml
 TOKEN = config_map["token"]
@@ -22,17 +21,9 @@ def read_remote_db():
 
 def read_db_conf():
     global db_connection
-    conf = open("config/dbconf.yaml", "r")
-    doc = yaml.safe_load(conf)
     try:
-        db_connection = pymysql.connect(
-            host=doc["db_host"],
-            user=doc["db_user"],
-            passwd=doc["db_psw"],
-            db=doc["db_name"],
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
-        )
+        db_connection = sqlite3.connect("data/studium.db", check_same_thread=False)
+        db_connection.row_factory = sqlite3.Row
     except Exception as e:
         print("DB connection error")
         print(e)
@@ -40,11 +31,11 @@ def read_db_conf():
 
 def query(sql):
     try:
-        with db_connection.cursor() as cursor:
-            cursor.execute(sql)
-            if not(sql.startswith("SELECT")):
-                db_connection.commit()
-            return cursor.fetchall()
-    except MySQLError as e:
-        print('Got error {!r}, errno is {}'.format(e, e.args[0]))
+        cursor = db_connection.cursor()
+        cursor.execute(sql)
+        if not(sql.startswith("SELECT")):
+            db_connection.commit()
+        return cursor.fetchall()
+    except sqlite3.Error as e:
+        print(e)
         return False

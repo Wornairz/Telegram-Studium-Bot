@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # Telegram
-from telegram import Update
 from telegram.ext import CallbackContext
 
 # System libraries

@@ -14,18 +14,16 @@ If you want to test the bot by creating your personal istance, follow this steps
 
 - Python 3
 - python-pip3
+- sqlite3
 
 #### To install with *pip3*
 
-- python-telegram-bot
-- pytz
+- pip3 install -r requirements.txt
 
 
 ### Database setup
 
-- Start mysql console, create a new database (eg. "CREATE DATABASE Studium;")
-- Exit mysql console, then go to path-to-project/data
-- $ mysql -u user -p your_db_name < Studium_DB.sql
+- $ sqlite3 studium.db < Studium_DB.sql 
 
 
 ### License
