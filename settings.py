@@ -5,7 +5,7 @@ import json
 from pymysql import MySQLError
 
 with open('config/settings.yaml') as yaml_config:
-	config_map = yaml.load(yaml_config)
+	config_map = yaml.load(yaml_config, Loader=yaml.SafeLoader)
 
 # Token of your telegram bot that you created from @BotFather, write it on settings.yaml
 TOKEN = config_map["token"]

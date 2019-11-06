@@ -27,7 +27,7 @@ def studium_menu(update: Update, context: CallbackContext):
 def buttonHandler(update: Update, context: CallbackContext):
     query = context.callback_query
     data = query.data
-    print("query data = " + data)
+    #print("query data = " + data)
     if data == "Esc":
         chat_id = context.callback_query.message.chat_id
         message_id = context.callback_query.message.message_id

@@ -20,7 +20,6 @@ def printUnsubscribe(context: CallbackContext):
     names = []
     values = []
     chat_id = context.callback_query.message.chat_id
-    print("prova")
     for subject in subscribed_subject(chat_id):
         names.append("📚 " + str(subject.split("|")[0]))
         values.append("dis=" + str(subject.split("|")[1]))
