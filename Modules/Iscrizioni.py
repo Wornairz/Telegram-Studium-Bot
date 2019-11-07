@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Telegram
+from telegram import Update
 from telegram.ext import CallbackContext
 
 # System libraries
@@ -13,7 +14,7 @@ import settings
 # Others
 import pytz
 
-def printYears(context: CallbackContext):
+def printYears(update: Update, context: CallbackContext):
     september = 9
     nYearsButtons = 3
     options = []
@@ -28,18 +29,18 @@ def printYears(context: CallbackContext):
     for x in range(nYearsButtons):
         options.insert(0, str(time.year - (1-val) - x) + "/" + str((time.year + val) - x))
         values.insert(0, "year=" + str((time.year + val) - x))
-    printKeyboard(context, options, values, "", "Seleziona l\'anno accademico:", 3)
+    printKeyboard(update, context, options, values, "", "Seleziona l\'anno accademico:", 3)
 
-def printDepartment(context, year, data):
+def printDepartment(update, context, year, data):
     names = []
     values = []
     for dipartimento in settings.dipartimenti:
         if str(dipartimento["anno_accademico"]) == str(year):
             names.append("🏢 " + str(dipartimento["nome"]))
             values.append("dep=" + dipartimento["id"])
-    printKeyboard(context, names, values, data, "Scegli il dipartimento:", 3)
+    printKeyboard(update, context, names, values, data, "Scegli il dipartimento:", 3)
 
-def printCdS(context, year, department, data):
+def printCdS(update, context, year, department, data):
     names = []
     values = []
     for corso in settings.cds:
@@ -47,25 +48,25 @@ def printCdS(context, year, department, data):
             max_anno = getMaxAnno(corso["nome"])
             names.append("🎓 " + str(corso["nome"]))
             values.append("cds=" + str(corso["id"]) + "_" + str(max_anno))
-    printKeyboard(context, names, values, data, "Scegli il corso di studio:", 2)
+    printKeyboard(update, context, names, values, data, "Scegli il corso di studio:", 2)
 
-def printCourseYears(context, max_anno : int, data : str):
+def printCourseYears(update, context, max_anno : int, data : str):
     names = []
     values = []
     for i in range(max_anno):
         names.append(str(i+1) +  "° anno")
         values.append("cy=" + str(i+1))
-    printKeyboard(context, names, values, data, "Scegli l\'anno della materia:", max_anno)
+    printKeyboard(update, context, names, values, data, "Scegli l\'anno della materia:", max_anno)
 
-def printSemester(context, data):
+def printSemester(update, context, data):
     names = []
     values = []
     for i in range(2):
         names.append(str(i+1) + "° semestre")
         values.append("sem=" + str(i+1))
-    printKeyboard(context, names, values, data, "Scegli il semestre:", 2)
+    printKeyboard(update, context, names, values, data, "Scegli il semestre:", 2)
 
-def printSubject(context, year, department, cds, courseyear, semester, data):
+def printSubject(update, context, year, department, cds, courseyear, semester, data):
     names = []
     values = []
     for materia in settings.materie:
@@ -74,9 +75,9 @@ def printSubject(context, year, department, cds, courseyear, semester, data):
                 #if(str(materia["semestre"]) == str(semester)):
                     names.append("📚 " + str(materia["nome"]))
                     values.append("sj=" + str(materia["codice_corso"]))
-    printKeyboard(context, names, values, data, "Scegli la materia:", 1)
+    printKeyboard(update, context, names, values, data, "Scegli la materia:", 1)
 
-def printChoiceSubscription(context, subject, oldData):
+def printChoiceSubscription(update, context, subject, oldData):
     keyboard = [[InlineKeyboardButton("✅ Sì", callback_data = "confSub" + "|" + oldData),
                  InlineKeyboardButton("🔙 Indietro", callback_data = (oldData.split("|", 1)[1]))]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -84,17 +85,17 @@ def printChoiceSubscription(context, subject, oldData):
     for materia in settings.materie:
         if str(materia["codice_corso"]) == str(subject):
             name = materia["nome"]
-    context.callback_query.edit_message_text("Vuoi iscriverti a " + name + "?", reply_markup=reply_markup)
+    update.callback_query.edit_message_text("Vuoi iscriverti a " + name + "?", reply_markup=reply_markup)
 
-def confirm_subscription(chat_id, codice_corso, context, data):
+def confirm_subscription(chat_id, codice_corso, update, context, data):
     settings.query("INSERT INTO `Iscrizioni` (`chat_id`,`codice_corso`) VALUES (" + str(chat_id) + "," + str(codice_corso) + ");")
-    printConfirmedSubscription(context, data)
+    printConfirmedSubscription(update, context, data)
 
-def printConfirmedSubscription(context, oldData):
+def printConfirmedSubscription(update, context, oldData):
     keyboard = [[InlineKeyboardButton("Altre iscrizioni", callback_data = oldData.split('|', 2)[2]),
                  InlineKeyboardButton("🔚 Esci", callback_data= 'Esc')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    context.callback_query.edit_message_text("Iscrizione avvenuta con successo!", reply_markup=reply_markup)
+    update.callback_query.edit_message_text("Iscrizione avvenuta con successo!", reply_markup=reply_markup)
 
 def getMaxAnno(nome : str):
     if nome.find("LM", 0, len(nome)) is not -1:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Telegram
+from telegram import Update
 from telegram.ext import CallbackContext
 
 # System libraries
@@ -11,21 +12,21 @@ import settings
 
 # Others
 
-def confirm_unsubscription(chat_id, codice_corso, context, data):
+def confirm_unsubscription(chat_id, codice_corso, update, context, data):
     settings.query("DELETE FROM Iscrizioni WHERE chat_id=" + str(chat_id) + " AND codice_corso=" + str(codice_corso))
-    printConfirmedUnsubscription(context)
+    printConfirmedUnsubscription(update, context)
 
-def printUnsubscribe(context: CallbackContext):
+def printUnsubscribe(update: Update, context: CallbackContext):
     names = []
     values = []
-    chat_id = context.callback_query.message.chat_id
+    chat_id = update.callback_query.message.chat_id
     for subject in subscribed_subject(chat_id):
         names.append("📚 " + str(subject.split("|")[0]))
         values.append("dis=" + str(subject.split("|")[1]))
     if not names:
-        context.callback_query.edit_message_text("Non sei iscritto a nessun corso, se vuoi iscriverti lancia il comando /studium")
+        update.callback_query.edit_message_text("Non sei iscritto a nessun corso, se vuoi iscriverti lancia il comando /studium")
     else:
-        printKeyboard(context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti", 1)
+        printKeyboard(update, context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti", 1)
 
 def subscribed_subject(chat_id):
     subscribedSubject = []
@@ -36,7 +37,7 @@ def subscribed_subject(chat_id):
                 subscribedSubject.append(str(materia["nome"]) + "|" + str(materia["codice_corso"]))
     return subscribedSubject
 
-def printChoiceUnSubscription(context, subject, oldData):
+def printChoiceUnSubscription(update, context, subject, oldData):
     keyboard = [[InlineKeyboardButton("✅ Sì", callback_data = "confDis" + "|" + oldData),
                  InlineKeyboardButton("🔙 Indietro", callback_data = "reload_dis")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -44,10 +45,10 @@ def printChoiceUnSubscription(context, subject, oldData):
     for materia in settings.materie:
         if str(materia["codice_corso"]) == str(subject):
             name = materia["nome"]
-    context.callback_query.edit_message_text("Vuoi discriverti a " + name + "?", reply_markup=reply_markup)
+    update.callback_query.edit_message_text("Vuoi discriverti a " + name + "?", reply_markup=reply_markup)
 
-def printConfirmedUnsubscription(context):
-    context.callback_query.edit_message_text("Discrizione avvenuta con successo!")
+def printConfirmedUnsubscription(update, context):
+    update.callback_query.edit_message_text("Discrizione avvenuta con successo!")
 
 
 

@@ -5,7 +5,7 @@ from functions import *
 from settings import *
 
 def main():
-    updater = Updater(TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 20})
+    updater = Updater(TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 20}, use_context=True)
     
     dp = updater.dispatcher
     #dp.add_handler(MessageHandler(Filters.all, logging_message),1)

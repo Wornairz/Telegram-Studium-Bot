@@ -3,13 +3,13 @@
 # Telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-def printKeyboard(context, listToPrint, callbackValues, oldData, msg, nButRow, reply=False):
+def printKeyboard(update, context, listToPrint, callbackValues, oldData, msg, nButRow, reply=False):
     keyboard = getKeyboard(listToPrint, callbackValues, oldData, nButRow)
     reply_markup = InlineKeyboardMarkup(keyboard)
     if reply:
-        context.message.reply_text(msg, reply_markup=reply_markup)
+        update.message.reply_text(msg, reply_markup=reply_markup)
     else:
-        context.callback_query.edit_message_text(msg, reply_markup=reply_markup)
+        update.callback_query.edit_message_text(msg, reply_markup=reply_markup)
 
 def getKeyboard(options, values, oldData, nButRow):
     i = 1
