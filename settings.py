@@ -19,6 +19,10 @@ def read_remote_db():
     cds = json.loads(requests.get("http://" + API_URL + "/cds").text)
     materie = json.loads(requests.get("http://" + API_URL + "/materie").text)
 
+def read_remote_avvisi():
+    avvisi = json.loads(requests.get("http://" + API_URL + "/avvisi").text)
+    return avvisi
+
 def read_db_conf():
     global db_connection
     try:

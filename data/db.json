@@ -179,5 +179,72 @@
             {"codice_corso": 18837, "nome": "CRYPTOGRAPHIC ENGINEERING", "anno_accademico": "2020", "id_cds": 579, "anno": 3},                                                                                   
             {"codice_corso": 18838, "nome": "SISTEMI CLOUD E LABORATORIO - SISTEMI CLOUD", "anno_accademico": "2020", "id_cds": 579, "anno": 1},                                                                
             {"codice_corso": 18839, "nome": "SISTEMI CLOUD E LABORATORIO - LABORATORIO", "anno_accademico": "2020", "id_cds": 579, "anno": 1}       
-    ]
+    ],
+
+    "Avvisi" : [
+        {
+          "idSubject": "18646",
+          "id": "1",
+          "title": "GIOVEDì 10 OTTOBRE NON CI SARà LEZIONE DI INGLESE. LE LEZIONI RIPRENDERANNO REGOLARMENTE MARTEDì 15 OTTOBRE alle h.12",
+          "text": "",
+          "teacher": "GIULIANA CACCIOLA",
+          "date": "Oct 08, 2019"
+        },
+        {
+          "idSubject": "18685",
+          "id": "1",
+          "title": "Canale Telegram",
+          "text": "Ecco il link di invito: https://t.me/joinchat/AAAAAEmqkY3reZj8pUWREw",
+          "teacher": "DARIO ALLEGRA",
+          "date": "Oct 14, 2019"
+        },
+        {
+          "idSubject": "18817",
+          "id": "1",
+          "title": "Lezione di domani (7/11/2019)",
+          "text": "Salve a tutti, purtroppo domani non potrò sostenere la lezione di laboratorio per problemi familiari, pertanto la stessa sarà tenuta dal prof. Cutello che continuerà con la spiegazione degli argomenti di teoria. Saluti, Mario Pavone. p.s. vi prego di voler girare il presente avviso a tutti coloro interessati non inclusi in elenco.",
+          "teacher": "MARIO FRANCESCO PAVONE",
+          "date": "Nov 07, 2019"
+        },
+        {
+          "idSubject": "18683",
+          "id": "2",
+          "title": "Matlab",
+          "text": "Chi volesse usare matlab, riporto URL per la registrazione. https://it.mathworks.com/academia/tah-portal/universita-degli-studi-di-catania-40705130.html E\\' obbligatorio l\\'utilizzo di email ISTITUZIONALE (studium/unict).",
+          "teacher": "FILIPPO STANCO",
+          "date": "Oct 07, 2019"
+        },
+        {
+          "idSubject": "18656",
+          "id": "3",
+          "title": "Lezione di oggi, 7 novembre 2019",
+          "text": "Si comunica che la lezione di oggi, 7 novembre 2019, ore 15-17 è spostata a domani, venerdì 8 novembre dalle ore 11 alle ore 13. Si comunica altresì che le lezioni di Analisi Matematica 2 riprenderanno regolarmente lunedì 11 novembre 2019. Cordiali saluti, Marianna Nicolosi",
+          "teacher": "MARIANNA NICOLOSI ASMUNDO",
+          "date": "Nov 07, 2019"
+        },
+        {
+          "idSubject": "18723",
+          "id": "4",
+          "title": "Argomenti delle prove in itinere",
+          "text": "Argomenti delle prove in itinere Prova 1:Matrici e sistemi lineari. Geometria lineare nel piano e nello spazio. Trasformazioni geometriche piane. Prova 2: Spazi vettoriali. Autovettori e autovalori di una matrice. Diagonalizzazione di matrici. Coniche. Il 17 dicembre ore 8-10 avrà luogo la prova in itinere 1. Per sostenere la suddetta prova le prenotazioni su studium verranno aperte il 25 novembre e si chiuderanno improrogabilmente il 12 dicembre. Non sarà possibile sostenere la prova senza prenotazione.",
+          "teacher": "Salvatore MILICI",
+          "date": "Nov 06, 2019"
+        },
+        {
+          "idSubject": "18694",
+          "id": "6",
+          "title": "[SMM] Aiuto per collega Erasmus",
+          "text": "Cari Studenti, Come sapete, sebbene le lezioni dei nostri corsi sono in Italiano, di tanto in tanto alcuni studenti Erasmus seguono le lezioni. Come potete immaginare, ciò crea alcuni problemi a questi vostri colleghi. Una vostra collega Erasmus mi chiedeva se qualcuno degli studenti del corso parlasse Inglese e potesse aiutarla a seguire il corso. Chiaramente non le serve un aiuto di tipo tecnico, ma una persona con la quale confrontarsi e parlare Inglese a proposito degli argomenti del corso. Se qualcuno di voi (anche più di una persona) fosse disponibile a dare una mano, mi contatti via mail. Grazie in anticipo per la disponibilità. AF ----- Dear Students, As you know, although our courses are taught in Italian, sometimes they are attended by Erasmus students. As you may imagine, this creates some issues. An Erasmus student attending the course asked me if some of the students who can speak English may help her attending the course. Of course, she does not need any technical help, but a colleague whom to speak to in English about the topics of the course. If someone of you would be available to help, please send me an e-mail. Thanks in advance. AF",
+          "teacher": "ANTONINO FURNARI",
+          "date": "Nov 06, 2019"
+        },
+        {
+          "idSubject": "18652",
+          "id": "24",
+          "title": "Nuovo spostamento di orario",
+          "text": "Contrariamente a quanto annunciato nello scorso avviso, l\\'esame di Calcolo Numerico previsto il 14 p.v. per gli studenti che hanno fatto un appello scritto nelle sessioni precedenti è spostato alle ore 9 poichè il Consiglio di Dipartimento, precedentemente previsto per le 9, è stato spostato alle ore 11. Scusate per l\\'inconveniente.",
+          "teacher": "Rosa Maria PIDATELLA",
+          "date": "Nov 09, 2019"
+        }
+      ]
 } 

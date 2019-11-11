@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Telegram
+import telegram
 from telegram import Update
 
 # System libraries
@@ -11,6 +12,25 @@ from Modules.Disiscrizioni import *
 from Modules.Keyboard import *
 
 # Others
+
+def getSubjectName(id):
+    for materia in settings.materie:
+        if str(materia["codice_corso"]) == str(id):
+            return str(materia["nome"])
+    return -1
+
+def forwardNotices(context: CallbackContext):
+    avvisi_json = settings.read_remote_avvisi()
+    for avviso in avvisi_json:
+        nome_materia = getSubjectName(avviso["idSubject"])
+        msg = "<b>" + str(nome_materia) + "</b>\n\n"
+        msg += "<b>Professore</b>: " + str(avviso["teacher"]) + "\n"
+        msg += "<b>Titolo</b>: " + str(avviso["title"]) + "\n\n"
+        msg += "<b>Testo</b>: \n" + str(avviso["text"]) + "\n\n"
+        msg += "<b>Data</b>: " + str(avviso["date"])
+        iscritti = settings.query("SELECT chat_id FROM Iscrizioni WHERE codice_corso=" + str(avviso["idSubject"]))
+        for iscritto in iscritti:
+            context.bot.sendMessage(chat_id=iscritto["chat_id"], text=msg, parse_mode=telegram.ParseMode.HTML)
 
 def subscribed_subject_text_list(update: Update, context: CallbackContext):
     msg = ""

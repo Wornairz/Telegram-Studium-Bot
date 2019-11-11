@@ -15,6 +15,7 @@ def main():
 
     read_db_conf()
     read_remote_db()
+    job_minute = updater.job_queue.run_repeating(forwardNotices, interval=30, first=0)
 
     updater.start_polling()
     updater.idle()
