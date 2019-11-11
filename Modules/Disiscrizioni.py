@@ -16,17 +16,17 @@ def confirm_unsubscription(chat_id, codice_corso, update, context, data):
     settings.query("DELETE FROM Iscrizioni WHERE chat_id=" + str(chat_id) + " AND codice_corso=" + str(codice_corso))
     printConfirmedUnsubscription(update, context)
 
-def printUnsubscribe(update: Update, context: CallbackContext):
+def printUnsubscribe(update: Update, context: CallbackContext, first_time = True):
     names = []
     values = []
-    chat_id = update.callback_query.message.chat_id
+    chat_id = update.message.chat_id if first_time else update.callback_query.message.chat_id
     for subject in subscribed_subject(chat_id):
         names.append("📚 " + str(subject.split("|")[0]))
         values.append("dis=" + str(subject.split("|")[1]))
     if not names:
-        update.callback_query.edit_message_text("Non sei iscritto a nessun corso, se vuoi iscriverti lancia il comando /studium")
+        update.message.reply_text("Non sei iscritto a nessun corso, se vuoi iscriverti clicca sul bottone nella tastiera")
     else:
-        printKeyboard(update, context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti", 1)
+        printKeyboard(update, context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti", 1, reply= first_time)
 
 def subscribed_subject(chat_id):
     subscribedSubject = []

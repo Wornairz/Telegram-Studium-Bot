@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Telegram
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
+from telegram.ext import CallbackContext
 
 def printKeyboard(update, context, listToPrint, callbackValues, oldData, msg, nButRow, reply=False):
     keyboard = getKeyboard(listToPrint, callbackValues, oldData, nButRow)
@@ -31,3 +32,21 @@ def getKeyboard(options, values, oldData, nButRow):
     else:
         keyboard.append([InlineKeyboardButton("🔚 Esci", callback_data="Esc")])
     return keyboard
+
+def printDefaultKeyboard(update: Update, context: CallbackContext):
+    kb = [[KeyboardButton('📚 Studium'),
+          KeyboardButton('❓ Help')]]
+    kb_markup = ReplyKeyboardMarkup(kb, resize_keyboard=True)
+    context.bot.send_message(chat_id=update.message.chat_id,
+                     text="Ciao! Seleziona una opzione dalla tastiera per iniziare.",
+                     reply_markup=kb_markup)
+
+def printMenu(update: Update, context: CallbackContext):
+    kb = [[KeyboardButton('✅ Iscriviti'),
+          KeyboardButton('❌ Disiscriviti')],
+          [KeyboardButton('📚 Mie iscrizioni')],
+          [KeyboardButton('🔙 Torna indietro')]]
+    kb_markup = ReplyKeyboardMarkup(kb, resize_keyboard=True)
+    context.bot.send_message(chat_id=update.message.chat_id,
+                     text="Seleziona una operazione da compiere:",
+                     reply_markup=kb_markup)

@@ -13,6 +13,9 @@ from Modules.Keyboard import *
 
 # Others
 
+def getHelp(update: Update, context: CallbackContext):
+    context.bot.sendMessage(chat_id= update.message.chat_id, text= "Usa il comando Studium nella tastiera (o scrivi /studium) per gestire le iscrizioni ai tuoi corsi")
+
 def getSubjectName(id):
     for materia in settings.materie:
         if str(materia["codice_corso"]) == str(id):
@@ -34,11 +37,11 @@ def forwardNotices(context: CallbackContext):
 
 def subscribed_subject_text_list(update: Update, context: CallbackContext):
     msg = ""
-    for subject in subscribed_subject(update.callback_query.message.chat_id):
+    for subject in subscribed_subject(update.message.chat_id):
         msg += "✅  " + subject.split("|")[0] + "\n\n"
     if msg is "":
-        msg = "Non sei iscritto a nessun corso, se vuoi iscriverti lancia il comando /studium"
-    update.callback_query.edit_message_text(msg)
+        msg = "Non sei iscritto a nessun corso, se vuoi iscriverti clicca sul bottone nella tastiera"
+    update.message.reply_text(msg)
 
 def studium_menu(update: Update, context: CallbackContext):
     menu = ["✅ Iscriviti", "❌ Disiscriviti", "📚 Mie iscrizioni"]
@@ -54,11 +57,7 @@ def buttonHandler(update: Update, context: CallbackContext):
         message_id = update.callback_query.message.message_id
         context.bot.delete_message(chat_id=chat_id, message_id=message_id)
     elif data.startswith("iscriviti"):
-        printYears(update, context)
-    elif data.startswith("disiscriviti"):
-        printUnsubscribe(update, context)
-    elif data.startswith("mie_iscrizioni"):
-        subscribed_subject_text_list(update, context)
+        printYears(update, context, first_time=False)
     else:
         checkIscriviti(update, context, data)
         checkDisiscriviti(update, context, data)
@@ -97,7 +96,7 @@ def checkIscriviti(update : Update, context : CallbackContext, data):
         codice_corso = (data.split('|')[1]).split('=')[1]
         confirm_subscription(chat_id, codice_corso, update, context, data)
     elif data == "reload_printYears":
-        printYears(update, context)
+        printYears(update, context, first_time=False)
 
 def checkDisiscriviti(update: Update, context : CallbackContext, data):
     if data.startswith("confDis"):
@@ -110,4 +109,4 @@ def checkDisiscriviti(update: Update, context : CallbackContext, data):
         codice_corso = (data.split('|')[0]).split('=')[1]
         printChoiceUnSubscription(update, context, codice_corso, data)
     elif data == "reload_dis":
-        printUnsubscribe(update, context)
+        printUnsubscribe(update, context, first_time=False)
