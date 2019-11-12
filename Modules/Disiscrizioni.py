@@ -21,12 +21,12 @@ def printUnsubscribe(update: Update, context: CallbackContext, first_time = True
     values = []
     chat_id = update.message.chat_id if first_time else update.callback_query.message.chat_id
     for subject in subscribed_subject(chat_id):
-        names.append("📚 " + str(subject.split("|")[0]))
+        names.append("📕 " + str(subject.split("|")[0]))
         values.append("dis=" + str(subject.split("|")[1]))
     if not names:
-        update.message.reply_text("Non sei iscritto a nessun corso, se vuoi iscriverti clicca sul bottone nella tastiera")
+        update.message.reply_text("Non sei iscritto a nessun corso, se vuoi iscriverti clicca sul bottone nella tastiera.")
     else:
-        printKeyboard(update, context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti", 1, reply= first_time)
+        printKeyboard(update, context, names, values, "", "Seleziona la materia da cui vuoi disiscriverti:", 1, reply= first_time)
 
 def subscribed_subject(chat_id):
     subscribedSubject = []

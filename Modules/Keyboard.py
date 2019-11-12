@@ -33,20 +33,12 @@ def getKeyboard(options, values, oldData, nButRow):
         keyboard.append([InlineKeyboardButton("🔚 Esci", callback_data="Esc")])
     return keyboard
 
-def printDefaultKeyboard(update: Update, context: CallbackContext):
-    kb = [[KeyboardButton('📚 Studium'),
-          KeyboardButton('❓ Help')]]
-    kb_markup = ReplyKeyboardMarkup(kb, resize_keyboard=True)
-    context.bot.send_message(chat_id=update.message.chat_id,
-                     text="Ciao! Seleziona una opzione dalla tastiera per iniziare.",
-                     reply_markup=kb_markup)
-
-def printMenu(update: Update, context: CallbackContext):
+def printMenu(update: Update, context: CallbackContext, message):
     kb = [[KeyboardButton('✅ Iscriviti'),
           KeyboardButton('❌ Disiscriviti')],
           [KeyboardButton('📚 Mie iscrizioni')],
-          [KeyboardButton('🔙 Torna indietro')]]
+          [KeyboardButton('❓ Help')]]
     kb_markup = ReplyKeyboardMarkup(kb, resize_keyboard=True)
     context.bot.send_message(chat_id=update.message.chat_id,
-                     text="Seleziona una operazione da compiere:",
+                     text=message,
                      reply_markup=kb_markup)

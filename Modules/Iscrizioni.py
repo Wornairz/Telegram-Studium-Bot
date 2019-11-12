@@ -16,7 +16,7 @@ import pytz
 
 def printYears(update: Update, context: CallbackContext, first_time = True):
     september = 9
-    nYearsButtons = 3
+    nYearsButtons = 1
     options = []
     values = []
     val = 0
@@ -73,7 +73,7 @@ def printSubject(update, context, year, department, cds, courseyear, semester, d
         if str(materia["anno_accademico"]) == str(year) and str(materia["id_cds"]) == str(cds):
             if(str(materia["anno"]) == str(courseyear)):
                 #if(str(materia["semestre"]) == str(semester)):
-                    names.append("📚 " + str(materia["nome"]))
+                    names.append("📕 " + str(materia["nome"]))
                     values.append("sj=" + str(materia["codice_corso"]))
     printKeyboard(update, context, names, values, data, "Scegli la materia:", 1)
 
@@ -88,14 +88,19 @@ def printChoiceSubscription(update, context, subject, oldData):
     update.callback_query.edit_message_text("Vuoi iscriverti a " + name + "?", reply_markup=reply_markup)
 
 def confirm_subscription(chat_id, codice_corso, update, context, data):
-    settings.query("INSERT INTO `Iscrizioni` (`chat_id`,`codice_corso`) VALUES (" + str(chat_id) + "," + str(codice_corso) + ");")
-    printConfirmedSubscription(update, context, data)
+    res = settings.query("SELECT * FROM Iscrizioni WHERE chat_id = " + str(chat_id) + " AND codice_corso = " + str(codice_corso) + ";")
+    if not res:
+        settings.query("INSERT INTO `Iscrizioni` (`chat_id`,`codice_corso`) VALUES (" + str(chat_id) + "," + str(codice_corso) + ");")
+        msg = "Iscrizione avvenuta con successo!"
+    else:
+        msg = "Sei già iscritto a questo corso!"
+    printConfirmedSubscription(update, context, data, msg)
 
-def printConfirmedSubscription(update, context, oldData):
+def printConfirmedSubscription(update, context, oldData, msg):
     keyboard = [[InlineKeyboardButton("Altre iscrizioni", callback_data = oldData.split('|', 2)[2]),
                  InlineKeyboardButton("🔚 Esci", callback_data= 'Esc')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.edit_message_text("Iscrizione avvenuta con successo!", reply_markup=reply_markup)
+    update.callback_query.edit_message_text(msg, reply_markup=reply_markup)
 
 def getMaxAnno(nome : str):
     if nome.find("LM", 0, len(nome)) is not -1:

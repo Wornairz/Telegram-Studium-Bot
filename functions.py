@@ -14,7 +14,21 @@ from Modules.Keyboard import *
 # Others
 
 def getHelp(update: Update, context: CallbackContext):
-    context.bot.sendMessage(chat_id= update.message.chat_id, text= "Usa il comando Studium nella tastiera (o scrivi /studium) per gestire le iscrizioni ai tuoi corsi")
+    msg= "Seleziona uno dei seguenti bottoni:\n\n"
+    msg+= "✅ Iscriviti - usalo per iscriverti ai corsi che ti interessano;\n"
+    msg+= "❌ Disiscriviti - ti permette di disiscriverti da uno dei corsi al quale sei iscritto;\n"
+    msg+= "📚 Mie iscrizioni - mostra una lista delle tue attuali iscrizioni;\n\n"
+    msg += "Se dovesse sparire il menù nella tastiera, digita /studium."
+    context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
+
+def startingBot(update: Update, context: CallbackContext):
+    msg = "Ciao! Benvenuto in Studium Bot 😃, il bot che ti permette di ricevere gli avvisi dei tuoi corsi qui su telegram.\n"
+    msg += "Per iniziare ad iscriverti al tuo primo corso, seleziona il bottone Iscriviti giù nella tastiera."
+    printMenu(update, context, msg)
+
+def studiumMenu(update: Update, context: CallbackContext):
+    msg = "Seleziona giù nella tastiera un'azione da intraprendere."
+    printMenu(update, context, msg)
 
 def getSubjectName(id):
     for materia in settings.materie:
