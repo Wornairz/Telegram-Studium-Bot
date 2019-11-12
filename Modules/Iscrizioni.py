@@ -35,8 +35,8 @@ def printDepartment(update, context, year, data):
     names = []
     values = []
     for dipartimento in settings.dipartimenti:
-        if str(dipartimento["anno_accademico"]) == str(year):
-            names.append("🏢 " + str(dipartimento["nome"]))
+        if str(dipartimento["annoAccademico"]) == str(year):
+            names.append("🏢 " + str(dipartimento["name"]))
             values.append("dep=" + dipartimento["id"])
     printKeyboard(update, context, names, values, data, "Scegli il dipartimento:", 3)
 
@@ -44,9 +44,9 @@ def printCdS(update, context, year, department, data):
     names = []
     values = []
     for corso in settings.cds:
-        if str(corso["anno_accademico"]) == str(year) and str(corso["id_dipartimento"]) == str(department):
-            max_anno = getMaxAnno(corso["nome"])
-            names.append("🎓 " + str(corso["nome"]))
+        if str(corso["annoAccademico"]) == str(year) and str(corso["idDipartimento"]) == str(department):
+            max_anno = getMaxAnno(corso["name"])
+            names.append("🎓 " + str(corso["name"]))
             values.append("cds=" + str(corso["id"]) + "_" + str(max_anno))
     printKeyboard(update, context, names, values, data, "Scegli il corso di studio:", 2)
 
@@ -70,11 +70,11 @@ def printSubject(update, context, year, department, cds, courseyear, semester, d
     names = []
     values = []
     for materia in settings.materie:
-        if str(materia["anno_accademico"]) == str(year) and str(materia["id_cds"]) == str(cds):
+        if str(materia["annoAccademico"]) == str(year) and str(materia["idCorsoDiStudio"]) == str(cds):
             if(str(materia["anno"]) == str(courseyear)):
                 #if(str(materia["semestre"]) == str(semester)):
-                    names.append("📕 " + str(materia["nome"]))
-                    values.append("sj=" + str(materia["codice_corso"]))
+                    names.append("📕 " + str(materia["name"]))
+                    values.append("sj=" + str(materia["id"]))
     printKeyboard(update, context, names, values, data, "Scegli la materia:", 1)
 
 def printChoiceSubscription(update, context, subject, oldData):
@@ -83,8 +83,8 @@ def printChoiceSubscription(update, context, subject, oldData):
     reply_markup = InlineKeyboardMarkup(keyboard)
     name = ""
     for materia in settings.materie:
-        if str(materia["codice_corso"]) == str(subject):
-            name = materia["nome"]
+        if str(materia["id"]) == str(subject):
+            name = materia["name"]
     update.callback_query.edit_message_text("Vuoi iscriverti a " + name + "?", reply_markup=reply_markup)
 
 def confirm_subscription(chat_id, codice_corso, update, context, data):

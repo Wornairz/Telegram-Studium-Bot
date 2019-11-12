@@ -32,8 +32,8 @@ def studiumMenu(update: Update, context: CallbackContext):
 
 def getSubjectName(id):
     for materia in settings.materie:
-        if str(materia["codice_corso"]) == str(id):
-            return str(materia["nome"])
+        if str(materia["id"]) == str(id):
+            return str(materia["name"])
     return -1
 
 def forwardNotices(context: CallbackContext):

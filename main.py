@@ -15,8 +15,7 @@ def main():
     #dp.add_handler(MessageHandler(Filters.all, logging_message),1)
     dp.add_handler(CommandHandler('start', startingBot))
     dp.add_handler(CommandHandler('studium', studiumMenu))
-    dp.add_handler(CommandHandler('help', getHelp)) 
-
+    dp.add_handler(CommandHandler('help', getHelp))
 
     dp.add_handler(MessageHandler(Filters.regex('✅ Iscriviti'), printYears))
     dp.add_handler(MessageHandler(Filters.regex('❌ Disiscriviti'), printUnsubscribe))

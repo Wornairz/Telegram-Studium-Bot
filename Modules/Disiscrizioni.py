@@ -33,8 +33,8 @@ def subscribed_subject(chat_id):
     res = settings.query("SELECT * FROM Iscrizioni WHERE chat_id=" + str(chat_id))
     for record in res:
         for materia in settings.materie:
-            if record["codice_corso"] == materia["codice_corso"]:
-                subscribedSubject.append(str(materia["nome"]) + "|" + str(materia["codice_corso"]))
+            if record["codice_corso"] == materia["id"]:
+                subscribedSubject.append(str(materia["name"]) + "|" + str(materia["id"]))
     return subscribedSubject
 
 def printChoiceUnSubscription(update, context, subject, oldData):
@@ -43,8 +43,8 @@ def printChoiceUnSubscription(update, context, subject, oldData):
     reply_markup = InlineKeyboardMarkup(keyboard)
     name = ""
     for materia in settings.materie:
-        if str(materia["codice_corso"]) == str(subject):
-            name = materia["nome"]
+        if str(materia["id"]) == str(subject):
+            name = materia["name"]
     update.callback_query.edit_message_text("Vuoi discriverti a " + name + "?", reply_markup=reply_markup)
 
 def printConfirmedUnsubscription(update, context):
