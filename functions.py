@@ -53,7 +53,7 @@ def forwardNotices(context: CallbackContext):
 def subscribed_subject_text_list(update: Update, context: CallbackContext):
     msg = ""
     for subject in subscribed_subject(update.message.chat_id):
-        msg += "✅  " + subject.split("|")[0] + "\n\n"
+        msg += "📕  " + subject.split("|")[0] + "\n\n"
     if msg is "":
         msg = "Non sei iscritto a nessun corso, se vuoi iscriverti clicca sul bottone nella tastiera"
     update.message.reply_text(msg)
