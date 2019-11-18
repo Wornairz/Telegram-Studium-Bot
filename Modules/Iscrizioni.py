@@ -44,7 +44,7 @@ def printCdS(update, context, year, department, data):
     names = []
     values = []
     for corso in settings.cds:
-        if str(corso["annoAccademico"]) == str(year) and str(corso["idDipartimento"]) == str(department):
+        if str(corso["anno"]) == str(year) and str(corso["idDipartimento"]) == str(department):
             max_anno = getMaxAnno(corso["name"])
             names.append("🎓 " + str(corso["name"]))
             values.append("cds=" + str(corso["id"]) + "_" + str(max_anno))

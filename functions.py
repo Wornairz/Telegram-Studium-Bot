@@ -45,6 +45,7 @@ def forwardNotices(context: CallbackContext):
         msg += "<b>Titolo</b>: " + str(avviso["title"]) + "\n\n"
         msg += "<b>Testo</b>: \n" + str(avviso["text"]) + "\n\n"
         msg += "<b>Data</b>: " + str(avviso["date"])
+        context.bot.sendMessage(chat_id=settings.CHAT_ID_TEST, text=msg, parse_mode=telegram.ParseMode.HTML)
         iscritti = settings.query("SELECT chat_id FROM Iscrizioni WHERE codice_corso=" + str(avviso["idSubject"]))
         for iscritto in iscritti:
             context.bot.sendMessage(chat_id=iscritto["chat_id"], text=msg, parse_mode=telegram.ParseMode.HTML)
