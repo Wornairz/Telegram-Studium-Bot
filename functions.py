@@ -26,6 +26,12 @@ def startingBot(update: Update, context: CallbackContext):
     msg += "Per iniziare ad iscriverti al tuo primo corso, seleziona il bottone Iscriviti giù nella tastiera."
     printMenu(update, context, msg)
 
+
+def getDevs(update: Update, context: CallbackContext):
+    msg = "@Pierpaolo791\n@warcreed\n@Wornairz\n@daxcpp\n@Helias\n\n"
+    msg += "Frontend: https://github.com/Wornairz/Telegram-Studium-Bot"
+    context.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
+
 def studiumMenu(update: Update, context: CallbackContext):
     msg = "Seleziona giù nella tastiera un'azione da intraprendere."
     printMenu(update, context, msg)
