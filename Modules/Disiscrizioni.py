@@ -33,7 +33,7 @@ def subscribed_subject(chat_id):
     res = settings.query("SELECT * FROM Iscrizioni WHERE chat_id=" + str(chat_id))
     for record in res:
         for materia in settings.materie:
-            if record["codice_corso"] == materia["id"]:
+            if str(record["codice_corso"]) == str(materia["id"]):
                 subscribedSubject.append(str(materia["name"]) + "|" + str(materia["id"]))
     return subscribedSubject
 
