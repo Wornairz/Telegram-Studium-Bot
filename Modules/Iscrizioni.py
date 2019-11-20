@@ -56,6 +56,8 @@ def printCourseYears(update, context, max_anno : int, data : str):
     for i in range(max_anno):
         names.append(str(i+1) +  "° anno")
         values.append("cy=" + str(i+1))
+    names.append("Altro")
+    values.append("cy=" + str(0))
     printKeyboard(update, context, names, values, data, "Scegli l\'anno della materia:", max_anno)
 
 def printSemester(update, context, data):
@@ -72,11 +74,12 @@ def printSubject(update, context, year, department, cds, courseyear, semester, d
     values = []
     for materia in settings.materie:
         if str(materia["annoAccademico"]) == str(year) and str(materia["idCorsoDiStudio"]) == str(cds):
-            if(str(materia["anno"]) == str(courseyear)) or str(materia["anno"])==str(0):
-                if (str(materia["semestre"]) == str(semester)) or str(materia["semestre"])==str(0):
+            if(str(materia["anno"]) == str(courseyear)):
+                if (str(materia["semestre"]) == str(semester)):
                     names.append("📕 " + str(materia["name"]))
                     values.append("sj=" + str(materia["id"]))
-    printKeyboard(update, context, names, values, data, "Scegli la materia:", 1)
+    msg = "Scegli la materia:" if names else "Nessuna materia trovata"
+    printKeyboard(update, context, names, values, data, msg, 1)
 
 def printChoiceSubscription(update, context, subject, oldData):
     keyboard = [[InlineKeyboardButton("✅ Sì", callback_data = "confSub" + "|" + oldData),

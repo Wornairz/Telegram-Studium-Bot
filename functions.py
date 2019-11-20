@@ -14,21 +14,27 @@ from Modules.Keyboard import *
 # Others
 
 def getHelp(update: Update, context: CallbackContext):
-    msg= "Seleziona uno dei seguenti bottoni:\n\n"
-    msg+= "✅ Iscriviti - usalo per iscriverti ai corsi che ti interessano;\n"
-    msg+= "❌ Disiscriviti - ti permette di disiscriverti da uno dei corsi al quale sei iscritto;\n"
-    msg+= "📚 Mie iscrizioni - mostra una lista delle tue attuali iscrizioni;\n\n"
-    msg += "Se dovesse sparire il menù nella tastiera, digita /studium."
+    msg = "Seleziona uno dei seguenti bottoni:\n\n"
+    msg+= "✅ Iscriviti - usalo per iscriverti ai corsi che ti interessano\n"
+    msg+= "❌ Disiscriviti - ti permette di disiscriverti da uno dei corsi al quale sei iscritto\n"
+    msg+= "📚 Mie iscrizioni - mostra una lista delle tue attuali iscrizioni\n\n"
+    msg+= "Se dovesse sparire il menù nella tastiera, digita /studium.\n\n"
+    msg+= "A causa di alcune informazioni mancanti nelle descrizioni dei corsi, alcune materie potrebbero essere nella sezione 'Altro'.\n"
+    msg+= "Se non trovi la materia neanche là, l'insegnamento su Studium potrebbe non essere stato ancora attivato."
+    msg+= "Se sei certo che l'insegnamento sia attivo, contatta uno dei /developers."
     context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
 
 def startingBot(update: Update, context: CallbackContext):
-    msg = "Ciao! Benvenuto in Studium Bot 😃, il bot che ti permette di ricevere gli avvisi dei tuoi corsi qui su telegram.\n"
-    msg += "Per iniziare ad iscriverti al tuo primo corso, seleziona il bottone Iscriviti giù nella tastiera."
+    msg = "Benvenuto in Studium Bot, il bot che ti permette di ricevere gli avvisi dei tuoi corsi qui su Telegram.\n"
+    msg+= "Per iniziare ad iscriverti al tuo primo corso, seleziona il bottone Iscriviti giù nella tastiera.\n\n"
+    msg+= "A causa di alcune informazioni mancanti nelle descrizioni dei corsi, alcune materie potrebbero essere nella sezione 'Altro'.\n"
+    msg+= "Se non trovi la materia neanche là, l'insegnamento su Studium potrebbe non essere stato ancora attivato."
+    msg+= "Se sei certo che l'insegnamento sia attivo, contatta uno dei /developers."
     printMenu(update, context, msg)
 
 
 def getDevs(update: Update, context: CallbackContext):
-    msg = "@Pierpaolo791\n@warcreed\n@Wornairz\n@daxcpp\n@Helias\n\n"
+    msg = "@Pierpaolo791\n@Warcreed\n@Wornairz\n@daxcpp\n@Helias\n\n"
     msg += "Frontend: https://github.com/Wornairz/Telegram-Studium-Bot"
     context.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
 
@@ -101,7 +107,15 @@ def checkIscriviti(update : Update, context : CallbackContext, data):
         data = cds + '|' + department + '|' + year
         printCourseYears(update, context, max_anno, data)
     elif data.startswith('cy'):
-        printSemester(update, context, data)
+        if(str((data.split('|')[0]).split('=')[1]) == "0"):
+            semester = "0"
+            courseyear = (data.split('|')[0]).split('=')[1]
+            cds = (data.split('|')[1]).split('=')[1]
+            department = (data.split('|')[2]).split('=')[1]
+            year = (data.split('|')[3]).split('=')[1]
+            printSubject(update, context, year, department, cds[:-2], courseyear, semester, data)
+        else:
+            printSemester(update, context, data)
     elif data.startswith('sem'):
         semester = (data.split('|')[0]).split('=')[1]
         courseyear = (data.split('|')[1]).split('=')[1]
