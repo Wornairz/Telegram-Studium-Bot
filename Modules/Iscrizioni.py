@@ -61,9 +61,10 @@ def printCourseYears(update, context, max_anno : int, data : str):
 def printSemester(update, context, data):
     names = []
     values = []
-    for i in range(2):
-        names.append(str(i+1) + "° semestre")
-        values.append("sem=" + str(i+1))
+    names.append(str(1) + "° semestre")
+    values.append("sem=I")
+    names.append(str(2) + "° semestre")
+    values.append("sem=II")
     printKeyboard(update, context, names, values, data, "Scegli il semestre:", 2)
 
 def printSubject(update, context, year, department, cds, courseyear, semester, data):
@@ -71,8 +72,8 @@ def printSubject(update, context, year, department, cds, courseyear, semester, d
     values = []
     for materia in settings.materie:
         if str(materia["annoAccademico"]) == str(year) and str(materia["idCorsoDiStudio"]) == str(cds):
-            if(str(materia["anno"]) == str(courseyear)):
-                #if(str(materia["semestre"]) == str(semester)):
+            if(str(materia["anno"]) == str(courseyear)) or str(materia["anno"])==str(0):
+                if (str(materia["semestre"]) == str(semester)) or str(materia["semestre"])==str(0):
                     names.append("📕 " + str(materia["name"]))
                     values.append("sj=" + str(materia["id"]))
     printKeyboard(update, context, names, values, data, "Scegli la materia:", 1)
