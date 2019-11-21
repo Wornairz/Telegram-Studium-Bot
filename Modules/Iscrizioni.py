@@ -75,7 +75,7 @@ def printSubject(update, context, year, department, cds, courseyear, semester, d
     for materia in settings.materie:
         if str(materia["annoAccademico"]) == str(year) and str(materia["idCorsoDiStudio"]) == str(cds):
             if(str(materia["anno"]) == str(courseyear)):
-                if (str(materia["semestre"]) == str(semester)):
+                if (str(materia["semestre"]) == str(semester)) or str(materia["semestre"]) == "I-II":
                     names.append("📕 " + str(materia["name"]))
                     values.append("sj=" + str(materia["id"]))
     msg = "Scegli la materia:" if names else "Nessuna materia trovata"
