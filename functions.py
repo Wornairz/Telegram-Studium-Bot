@@ -19,8 +19,8 @@ def getHelp(update: Update, context: CallbackContext):
     msg+= "❌ Disiscriviti - ti permette di disiscriverti da uno dei corsi al quale sei iscritto\n"
     msg+= "📚 Mie iscrizioni - mostra una lista delle tue attuali iscrizioni\n\n"
     msg+= "Se dovesse sparire il menù nella tastiera, digita /studium.\n\n"
-    msg+= "A causa di alcune informazioni mancanti nelle descrizioni dei corsi, alcune materie potrebbero essere nella sezione 'Altro'.\n"
-    msg+= "Se non trovi la materia neanche là, l'insegnamento su Studium potrebbe non essere stato ancora attivato."
+    msg+= "A causa di informazioni mancanti nelle descrizioni dei corsi, alcune materie potrebbero essere nella sezione 'Altro'.\n"
+    msg+= "Se non trovi la materia neanche là, l'insegnamento su Studium potrebbe non essere stato ancora attivato. "
     msg+= "Se sei certo che l'insegnamento sia attivo, contatta uno dei /developers."
     context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
 
