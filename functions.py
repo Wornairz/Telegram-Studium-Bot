@@ -35,7 +35,8 @@ def startingBot(update: Update, context: CallbackContext):
 
 def getDevs(update: Update, context: CallbackContext):
     msg = "@Pierpaolo791\n@Warcreed\n@Wornairz\n@daxcpp\n@Helias\n\n"
-    msg += "Frontend: https://github.com/Wornairz/Telegram-Studium-Bot"
+    msg += "Telegram Bot source code: https://github.com/UNICT-DMI/Telegram-Studium-Bot \n"
+    msg += "Studium service source code: Coming Soon"
     context.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
 
 def studiumMenu(update: Update, context: CallbackContext):
