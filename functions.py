@@ -12,6 +12,7 @@ from Modules.Disiscrizioni import *
 from Modules.Keyboard import *
 
 # Others
+check_connection = False
 
 def getHelp(update: Update, context: CallbackContext):
     msg = "Seleziona uno dei seguenti bottoni:\n\n"
@@ -66,9 +67,13 @@ def getSubjectName(id):
     return -1
 
 def sendConnectionErrorMessage(context: CallbackContext):
-    context.bot.sendMessage(chat_id=settings.CHAT_ID_TEST,
-                            text="Studium Service è down (come chi lo ha sviluppato), non riesco a connettermi")
-
+    global check_connection
+    if(check_connection == False):
+        context.bot.sendMessage(chat_id=settings.CHAT_ID_TEST, text="Studium Service è down (come chi lo ha sviluppato), non riesco a connettermi")
+        check_connection = True
+    else:
+        check_connection = False
+        
 def readRemoteDB(context: CallbackContext):
     job = context.job
     if(settings.read_remote_db() is False):
