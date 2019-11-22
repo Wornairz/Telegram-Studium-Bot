@@ -65,8 +65,22 @@ def getSubjectName(id):
             return str(materia["name"])
     return -1
 
+def sendConnectionErrorMessage(context: CallbackContext):
+    context.bot.sendMessage(chat_id=settings.CHAT_ID_TEST,
+                            text="Studium Service è down (come chi lo ha sviluppato), non riesco a connettermi")
+
+def readRemoteDB(context: CallbackContext):
+    job = context.job
+    if(settings.read_remote_db() is False):
+        sendConnectionErrorMessage(context)
+    else:
+        job.schedule_removal()
+
 def forwardNotices(context: CallbackContext):
     avvisi_json = settings.read_remote_avvisi()
+    if(avvisi_json is False):
+        sendConnectionErrorMessage(context)
+        return
     for avviso in avvisi_json:
         nome_materia = getSubjectName(avviso["idSubject"])
         msg = "<b>" + str(nome_materia) + "</b>\n\n"
