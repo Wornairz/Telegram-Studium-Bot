@@ -27,7 +27,7 @@ def printYears(update: Update, context: CallbackContext, first_time = True):
     if time > checkNewYear:
         val = 1
     for x in range(nYearsButtons):
-        options.insert(0, str(time.year - (1-val) - x) + "/" + str((time.year + val) - x))
+        options.insert(0, "🕒 " + str(time.year - (1-val) - x) + "/" + str((time.year + val) - x))
         values.insert(0, "year=" + str((time.year + val) - x))
     printKeyboard(update, context, options, values, "", "Seleziona l\'anno accademico:", 3, reply= first_time)
 

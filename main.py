@@ -17,6 +17,7 @@ def main():
     dp.add_handler(CommandHandler('studium', studiumMenu))
     dp.add_handler(CommandHandler('developers', getDevs))
     dp.add_handler(CommandHandler('help', getHelp))
+    dp.add_handler(CommandHandler('stats', printStats))
 
     dp.add_handler(MessageHandler(Filters.regex('✅ Iscriviti'), printYears))
     dp.add_handler(MessageHandler(Filters.regex('❌ Disiscriviti'), printUnsubscribe))

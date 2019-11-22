@@ -25,6 +25,7 @@ def getHelp(update: Update, context: CallbackContext):
     context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
 
 def startingBot(update: Update, context: CallbackContext):
+    print(update.message.chat_id)
     msg = "Benvenuto in Studium Bot, il bot che ti permette di ricevere gli avvisi dei tuoi corsi qui su Telegram.\n"
     msg+= "Per iniziare ad iscriverti al tuo primo corso, seleziona il bottone Iscriviti giù nella tastiera.\n\n"
     msg+= "A causa di alcune informazioni mancanti nelle descrizioni dei corsi, alcune materie potrebbero essere nella sezione 'Altro'.\n"
@@ -32,6 +33,21 @@ def startingBot(update: Update, context: CallbackContext):
     msg+= "Se sei certo che l'insegnamento sia attivo, contatta uno dei /developers."
     printMenu(update, context, msg)
 
+
+def getNumberOfSubscribes():
+    res = settings.query("SELECT count(*) AS cont FROM Iscrizioni")
+    return str(res[0]["cont"])
+
+
+def getNumberOfUsers():
+    res = settings.query("SELECT count(*) AS cont FROM (SELECT DISTINCT chat_id FROM Iscrizioni)")
+    return str(res[0]["cont"])
+
+def printStats(update: Update, context: CallbackContext):
+    if(str(update.message.chat_id) == str(settings.CHAT_ID_TEST)):
+        msg = "Numero di iscrizioni alle materie : " + str(getNumberOfSubscribes()) + "\n"
+        msg += "Numero di utenti iscritti : " + str(getNumberOfUsers())
+        context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
 
 def getDevs(update: Update, context: CallbackContext):
     msg = "@Pierpaolo791\n@Warcreed\n@Wornairz\n@daxcpp\n@Helias\n\n"
