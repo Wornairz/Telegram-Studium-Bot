@@ -43,10 +43,15 @@ def getNumberOfUsers():
     res = settings.query("SELECT count(*) AS cont FROM (SELECT DISTINCT chat_id FROM Iscrizioni)")
     return str(res[0]["cont"])
 
+def getNumberOfSubjects():
+    res = settings.query("SELECT count(*) AS cont FROM (SELECT DISTINCT codice_corso FROM Iscrizioni)")
+    return str(res[0]["cont"])
+
 def printStats(update: Update, context: CallbackContext):
     if(str(update.message.chat_id) == str(settings.CHAT_ID_TEST)):
         msg = "Numero di iscrizioni alle materie : " + str(getNumberOfSubscribes()) + "\n"
         msg += "Numero di utenti iscritti : " + str(getNumberOfUsers())
+        msg += "Numero di materie che hanno almeno un iscrizione : " + str(getNumberOfSubjects())
         context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
 
 def getDevs(update: Update, context: CallbackContext):
