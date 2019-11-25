@@ -50,7 +50,7 @@ def getNumberOfSubjects():
 def printStats(update: Update, context: CallbackContext):
     if(str(update.message.chat_id) == str(settings.CHAT_ID_TEST)):
         msg = "Numero di iscrizioni alle materie : " + str(getNumberOfSubscribes()) + "\n"
-        msg += "Numero di utenti iscritti : " + str(getNumberOfUsers())
+        msg += "Numero di utenti iscritti : " + str(getNumberOfUsers()) + "\n"
         msg += "Numero di materie che hanno almeno un iscrizione : " + str(getNumberOfSubjects())
         context.bot.sendMessage(chat_id= update.message.chat_id, text= msg)
 
