@@ -18,6 +18,7 @@ def main():
     dp.add_handler(CommandHandler('developers', getDevs))
     dp.add_handler(CommandHandler('help', getHelp))
     dp.add_handler(CommandHandler('stats', printStats))
+    dp.add_handler(CommandHandler('stopspam', stopErrorMessage))
 
     dp.add_handler(MessageHandler(Filters.regex('✅ Iscriviti'), printYears))
     dp.add_handler(MessageHandler(Filters.regex('❌ Disiscriviti'), printUnsubscribe))
@@ -26,9 +27,11 @@ def main():
     #dp.add_handler(CallbackQueryHandler(callback))
     dp.add_handler(CallbackQueryHandler(buttonHandler))
 
+    job_queue = updater.job_queue
+
     read_db_conf()
-    read_remote_db()
-    job_minute = updater.job_queue.run_repeating(forwardNotices, interval=60, first=0)
+    job_remote_setup = job_queue.run_repeating(readRemoteDB, interval=60, first=0)
+    job_avvisi = job_queue.run_repeating(forwardNotices, interval=60, first=0)
 
     updater.start_polling()
     updater.idle()

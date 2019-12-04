@@ -16,12 +16,19 @@ def read_remote_db():
     global cds
     global materie
 
-    dipartimenti = json.loads('[{"id": "D251", "name": "DMI", "annoAccademico": 2020}]')
-    cds = json.loads(requests.get("http://" + API_URL + "/cdl?anno=2020&token=").text)
-    materie = json.loads(requests.get("http://" + API_URL + "/materie?anno=2020&token=").text)
+    try:
+        dipartimenti = json.loads('[{"id": "D251", "name": "DMI", "annoAccademico": 2020}]')
+        cds = json.loads(requests.get("http://" + API_URL + "/cdl?anno=2020&token=").text)
+        materie = json.loads(requests.get("http://" + API_URL + "/materie?anno=2020&token=").text)
+    except requests.exceptions.ConnectionError:
+        return False
 
 def read_remote_avvisi():
-    avvisi = json.loads(requests.get("http://" + API_URL + "/avvisi?anno=2020&token=").text)
+    avvisi = ""
+    try:
+        avvisi = json.loads(requests.get("http://" + API_URL + "/avvisi?anno=2020&token=").text)
+    except requests.exceptions.ConnectionError:
+        avvisi = False
     return avvisi
 
 def read_db_conf():
